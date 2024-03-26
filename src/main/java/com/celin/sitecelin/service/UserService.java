@@ -1,63 +1,54 @@
 package com.celin.sitecelin.service;
 
-import com.celin.sitecelin.entities.Address;
-import com.celin.sitecelin.entities.UpdateForm;
-import com.celin.sitecelin.entities.User;
+import com.celin.sitecelin.entities.exceptions.IllegalServiceException;
+import com.celin.sitecelin.entities.exceptions.IllegalUserField;
+import com.celin.sitecelin.entities.users.User;
+import com.celin.sitecelin.entities.users.utils.dto.UpdateUserDto;
 import com.celin.sitecelin.model.Users;
+import com.celin.sitecelin.model.dto.users.UserDetails;
+import com.celin.sitecelin.model.dto.users.UserModelDto;
+import com.celin.sitecelin.utils.InternalHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.coyote.BadRequestException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.celin.sitecelin.utils.InternalHelper.dtoMaker;
+
 @Service
 public class UserService {
-  public List<User> getAllUsers() {
-    return Users.userList;
+  public List<UserModelDto> getAllUsers() {
+    return Users.userList.stream().map(UserModelDto::userDto).toList();
   }
 
   public User postNewUser(String data) throws JsonProcessingException {
-    User newUser = jsonConvert(data, User.class);
+    User newUser = dtoMaker(data, User.class);
     return Users.newUser(newUser);
   }
 
-  public User updateUser(String name, String data) throws IOException {
-    Optional<User> user = Users.findUser(name);
-    if (user.isEmpty()) {
-      throw new RuntimeException("this User does not exists");
-    }
-    UpdateForm updateForm = jsonConvert(data, UpdateForm.class);
+  public User updateUser(Long id, String data) throws IOException {
     try {
-      if (updateForm.phones() != null) {
-        updateForm.phones().stream().forEach(phone -> user.get().setPhones(phone));
+      Optional<User> user = Users.findUserById(id);
+      if (user.isEmpty()) {
+        throw new RuntimeException("this User does not exists");
       }
-      if (updateForm.zipCode() != null) {
-        Address address = new Address(updateForm.zipCode());
-        user.get().setAddress(address);
-        if (updateForm.number() != null) {
-          address.setNumber(Integer.parseInt(updateForm.number()));
-        }
-        if (updateForm.complement() != null) {
-          address.setComplement(updateForm.complement());
-        }
-        if (updateForm.email() != null) {
-          user.get().setEmail(updateForm.email());
-        }
-      }
-      return user.get();
-    } catch (IllegalArgumentException e) {
+      return InternalHelper.updateUser(user.get(), dtoMaker(data, UpdateUserDto.class));
+
+    } catch (IllegalUserField e) {
       throw new BadRequestException(e);
     }
   }
 
-  public <T> T jsonConvert(String data, Class<T> classToFill) throws JsonProcessingException {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
-    return mapper.readValue(data, classToFill);
-  }
 
+  public UserDetails getUserById(Long id) {
+    Optional<User> user = Users.findUserById(id);
+    if(user.isEmpty()) {
+      throw new IllegalServiceException("User not found", HttpStatus.NOT_FOUND);
+    }
+   return UserDetails.userDetails(user.get());
+  }
 }
