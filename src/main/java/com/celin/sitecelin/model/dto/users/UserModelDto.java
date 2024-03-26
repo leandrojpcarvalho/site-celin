@@ -1,0 +1,16 @@
+package com.celin.sitecelin.model.dto.users;
+
+import com.celin.sitecelin.entities.users.User;
+import com.celin.sitecelin.entities.users.utils.Phone;
+
+import java.util.ArrayList;
+
+public record UserModelDto (
+      Long id,
+      String name,
+      ArrayList<Phone> phones
+){
+  public static UserModelDto userDto(User user) {
+    return new UserModelDto(user.getId(), user.getName(), user.getPhones());
+  }
+}

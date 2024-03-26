@@ -1,4 +1,4 @@
-package com.celin.sitecelin.entities;
+package com.celin.sitecelin.entities.users.utils;
 
 import java.util.LinkedHashMap;
 import java.util.UUID;
