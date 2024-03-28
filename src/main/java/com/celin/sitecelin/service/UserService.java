@@ -16,13 +16,19 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.celin.sitecelin.utils.InternalHelper.dtoMaker;
 
 @Service
 public class UserService {
-  public List<UserModelDto> getAllUsers() {
-    return Users.userList.stream().map(UserModelDto::userDto).toList();
+  public List<UserModelDto> getAllUsers(String name) {
+     Stream<User> stream = Users.userList.stream();
+     if(name != null) {
+       return stream.filter(user -> user.getName().toLowerCase().contains(name.toLowerCase()))
+             .map(UserModelDto::userDto).toList();
+     }
+    return stream.map(UserModelDto::userDto).toList();
   }
 
   public User postNewUser(String data) throws JsonProcessingException {

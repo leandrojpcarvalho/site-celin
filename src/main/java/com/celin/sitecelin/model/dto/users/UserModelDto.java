@@ -8,9 +8,10 @@ import java.util.ArrayList;
 public record UserModelDto (
       Long id,
       String name,
-      ArrayList<Phone> phones
+      String email,
+      String role
 ){
   public static UserModelDto userDto(User user) {
-    return new UserModelDto(user.getId(), user.getName(), user.getPhones());
+    return new UserModelDto(user.getId(), user.getName(), user.getEmail() == null ? "": user.getEmail(), user.getAccessLevel());
   }
 }
