@@ -5,13 +5,14 @@ import com.celin.sitecelin.model.dto.users.UserDetails;
 import com.celin.sitecelin.model.dto.users.UserModelDto;
 import com.celin.sitecelin.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:5173/")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -23,8 +24,8 @@ public class UserController {
   }
 
   @GetMapping
-  public ResponseEntity<List<UserModelDto>> getUser() {
-    return ResponseEntity.ok(service.getAllUsers());
+  public ResponseEntity<List<UserModelDto>> getUser(@RequestParam(value = "name", required = false) String name) {
+    return ResponseEntity.ok(service.getAllUsers(name));
   }
 
   @GetMapping("/{id}")
