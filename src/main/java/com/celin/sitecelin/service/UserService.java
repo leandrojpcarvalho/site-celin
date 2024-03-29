@@ -3,6 +3,7 @@ package com.celin.sitecelin.service;
 import com.celin.sitecelin.entities.exceptions.IllegalServiceException;
 import com.celin.sitecelin.entities.exceptions.IllegalUserField;
 import com.celin.sitecelin.entities.users.User;
+import com.celin.sitecelin.entities.users.utils.Address;
 import com.celin.sitecelin.entities.users.utils.dto.UpdateUserDto;
 import com.celin.sitecelin.model.Users;
 import com.celin.sitecelin.model.dto.users.UserDetails;
@@ -57,4 +58,6 @@ public class UserService {
     }
    return UserDetails.userDetails(user.get());
   }
+
+
 }

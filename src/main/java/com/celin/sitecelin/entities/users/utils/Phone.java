@@ -15,6 +15,15 @@ public class Phone {
   private int ddd;
   private String local;
 
+  public Phone() {}
+
+  public Phone(String phone) {
+    Integer ddd = Integer.parseInt(phone.substring(0,2));
+    this.setDdd(ddd);
+    Integer number = Integer.parseInt(phone.substring(3));
+    this.setNumber(number);
+  }
+
   public Integer getNumber() {
     return number;
   }

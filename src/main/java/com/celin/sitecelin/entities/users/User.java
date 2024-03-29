@@ -3,11 +3,14 @@ package com.celin.sitecelin.entities.users;
 import com.celin.sitecelin.entities.exceptions.IllegalUserField;
 import com.celin.sitecelin.entities.users.utils.Address;
 import com.celin.sitecelin.entities.users.utils.Phone;
+import com.celin.sitecelin.model.Users;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.core.type.filter.RegexPatternTypeFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class User {
   private final Long id;
@@ -15,14 +18,29 @@ public class User {
   private String email;
   private Address address;
   private String password;
-  private final ArrayList<Phone> phones = new ArrayList<>();
+  private ArrayList<Phone> phones = new ArrayList<>();
   private String accessLevel;
 
-  public User(@JsonProperty("name") String name, Long id) {
+  public User(String name, Long id) {
     this.id = id;
     this.name = name;
     this.password = name;
     this.setAccessLevel("user");
+  }
+
+  public User(
+        @JsonProperty("address") Address address,
+        @JsonProperty("email") String email,
+        @JsonProperty("name") String name,
+        @JsonProperty("phones") String[] phones,
+        @JsonProperty("role") String role) {
+    this.name = name;
+    this.password = name;
+    this.address = address;
+    this.email = email;
+    this.phones = (ArrayList<Phone>) Arrays.stream(phones).map(phone -> new Phone(phone)).collect(Collectors.toList());
+    this.id = Users.getNewId();
+    this.accessLevel = role;
   }
 
   public User() {

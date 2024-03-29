@@ -16,7 +16,7 @@ public class Users {
     Address address = new Address();
     address.setZipCode("58065156");
     address.setComplement("ap 404");
-    address.setNumber(472);
+    address.setNumber("472");
     gabriela.setAddress(address);
     gabriela.setPhones("11 98888888");
     gabriela.setEmail("gabriela@gmail.com");
@@ -62,5 +62,9 @@ public class Users {
           .filter(user -> user.getAccessLevel().equals("student"))
           .map(user -> (Student) user)
           .toList();
+  }
+
+  public static Long getNewId () {
+    return userList.stream().count();
   }
 }

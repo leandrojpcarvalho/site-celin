@@ -15,7 +15,18 @@ public class Address {
   private String city;
   private String state;
   private String complement;
-  private Integer number;
+  private String number;
+
+  public Address(){}
+
+  public Address(String address, String zipCode, String city, String state, String complement, String number) {
+    this.address = address;
+    this.zipCode = zipCode;
+    this.city = city;
+    this.state = state;
+    this.complement = complement;
+    this.number = number;
+  }
 
   public String getAddress() {
     return address;
@@ -40,14 +51,11 @@ public class Address {
     this.complement = complement;
   }
 
-  public Integer getNumber() {
+  public String getNumber() {
     return number;
   }
 
-  public void setNumber(Integer number) {
-    if(number <= 0) {
-      throw new IllegalUserField("the number must be greater than 0");
-    }
+  public void setNumber(String number) {
     this.number = number;
   }
 
